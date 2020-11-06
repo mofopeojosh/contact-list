@@ -7,11 +7,12 @@
             </template>
 
             <div class="contact-card">
-                <ContactProfile :contact="contact"/>
-                <div class="contact-card-actions">
-                    <div><a href="#" class="link" @click.prevent="editContact(index)">edit</a></div>
-                    <div><a href="#" class="link" @click.prevent="deleteContact(index)">delete</a></div>
-                </div>
+                <ContactProfile :contact="contact">
+                    <div class="contact-card-actions">
+                        <a href="#" class="link" @click.prevent="editContact(index)">edit</a>
+                        <a href="#" class="link" @click.prevent="deleteContact(index)">delete</a>
+                    </div>
+                </ContactProfile>
             </div>
         </li>
         <li v-if="contacts.length <= 3">
@@ -50,23 +51,20 @@ export default {
     }
 
     .contact-card {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
         padding: 1.25em 1em;
         margin: 30px auto;
         border-radius: 10px;
-        flex-grow: 1;
         background-color: #FFFFFF;
-        box-shadow: 0 1px 10px 1px rgba(0,0,0,.1);
+        box-shadow: 0 1px 10px 1px rgba(0, 0, 0, .1);
     }
 
-    .contact-card-actions{
-        text-align: right;
+    .contact-card-actions {
+        margin-top: 5px;
         font-weight: 200;
     }
-    .contact-card-actions a{
+
+    .contact-card-actions a {
+        padding-right: 5px;
         color: #e53e3e;
     }
 </style>
