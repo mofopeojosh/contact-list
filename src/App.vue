@@ -136,8 +136,8 @@ export default {
             this.contactToDelete = {};
         },
         scrollFunction() {
-            const bottom = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
-            if (bottom) {
+            const heightDiff = document.documentElement.offsetHeight - (document.documentElement.scrollTop + window.innerHeight);
+            if (heightDiff <= 20) {
                 this.incrementPage();
             }
         },
