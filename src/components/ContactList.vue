@@ -1,9 +1,5 @@
 <template>
     <ul class="contact-list">
-        <li v-if="contacts.length < 3">
-            <!--Ad goes here-->
-            <slot></slot>
-        </li>
         <li v-for="(contact, index) in contacts" :key="index">
             <template v-if="index === 3">
                 <!--Ad goes here-->
@@ -17,6 +13,10 @@
                     <a href="#" class="link" @click.prevent="deleteContact(index)">delete</a>
                 </div>
             </div>
+        </li>
+        <li v-if="contacts.length <= 3">
+            <!--Ad goes here-->
+            <slot></slot>
         </li>
     </ul>
 

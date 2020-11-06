@@ -32,7 +32,7 @@
                     @close="dismissCreateModal">
 
             <ContactForm
-              :formState="formState"
+              :formState="createFormState"
               @submit="createContact"/>
 
         </MicroModal>
@@ -40,7 +40,7 @@
         <MicroModal modalId="edit-modal" :state="showEditForm" @close="dismissEditModal">
             <ContactForm
               editMode
-              :formState="formState"
+              :formState="editFormState"
               :formData="contactToEdit"
               @submit="editContact"/>
         </MicroModal>
@@ -96,7 +96,8 @@ export default {
             contactToEdit: {},
             contactToEditIndex: null,
             deleteState: 'PENDING',
-            formState: 'PENDING',
+            createFormState: 'PENDING',
+            editFormState: 'PENDING',
         };
     },
     created() {
@@ -158,7 +159,7 @@ export default {
             }, 1000);
         },
         createContact(data) {
-            this.formState = 'SUBMITTING';
+            this.createFormState = 'SUBMITTING';
             fetch(`https://reqres.in/api/users`, {
                 method: 'POST',
                 body: JSON.stringify(data)
@@ -170,14 +171,14 @@ export default {
                         ...data
                     });
                     this.dismissCreateModal();
-                    this.formState = 'SUCCESS';
+                    this.createFormState = 'SUCCESS';
                 })
                 .catch(() => {
-                    this.formState = 'ERROR';
+                    this.createFormState = 'ERROR';
                 });
         },
         editContact(data) {
-            this.formState = 'SUBMITTING';
+            this.editFormState = 'SUBMITTING';
             fetch(`https://reqres.in/api/users`, {
                 method: 'PATCH',
                 body: JSON.stringify(data)
@@ -185,10 +186,11 @@ export default {
                 .then(data => data.json())
                 .then(() => {
                     this.$set(this.contactList, this.contactToEditIndex, data);
-                    this.formState = 'SUCCESS';
+                    this.dismissEditModal();
+                    this.editFormState = 'SUCCESS';
                 })
                 .catch(() => {
-                    this.formState = 'ERROR';
+                    this.editFormState = 'ERROR';
                 });
         },
         deleteContact() {
@@ -280,10 +282,6 @@ export default {
         outline: none;
         padding: 0;
         background-color: transparent;
-    }
-
-    button:hover {
-        cursor: pointer;
     }
 
     button:focus {

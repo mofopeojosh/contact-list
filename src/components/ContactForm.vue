@@ -25,7 +25,7 @@
                       aria-controls="file-input"
                       class="file-input-trigger"
                       @click.prevent="triggerFileInput">
-                    Choose
+                    {{uploadingFile ? 'Uploading...' : 'Choose'}}
                 </span>
             </div>
             <input class="form-input-hidden" ref="fileInput" type="file" @change="handleFileUpload" id="file-input">
@@ -35,7 +35,7 @@
         <div class="form-action">
             <button class="app-btn"
                     type="submit"
-                    :disabled="formState === 'SUBMITTING'">
+                    :disabled="formState === 'SUBMITTING' || uploadingFile">
                 <Spinner :loading="formState === 'SUBMITTING'"/>
                 {{ editMode ? 'Update' : 'Add' }} contact
             </button>
@@ -67,12 +67,14 @@ export default {
             },
             errors: {},
             fileName: '',
+            uploadingFile: false,
         };
     },
     watch: {
         formData(newVal) {
-            if(this.formState === 'SUCCESS' || this.formState === 'PENDING'){
+            if (this.formState === 'SUCCESS' || this.formState === 'PENDING') {
                 this.contactForm = newVal;
+                this.fileName = newVal.avatar;
             }
         },
         formState() {
@@ -85,13 +87,14 @@ export default {
         }
     },
     methods: {
-        resetForm(){
+        resetForm() {
             this.contactForm = {
                 first_name: '',
                 last_name: '',
                 email: '',
                 avatar: ''
-            }
+            };
+            this.fileName = '';
         },
         validateContactForm() {
             this.errors = {};
@@ -115,14 +118,15 @@ export default {
                 this.errors.avatar = 'Kindly add an avatar';
             }
 
-            if(noErrors){
+            if (noErrors) {
                 this.$emit('submit', this.contactForm);
             }
         },
         triggerFileInput() {
-          this.$refs.fileInput.click();
+            this.$refs.fileInput.click();
         },
         handleFileUpload(event) {
+            this.uploadingFile = true;
             const file = event.target.files[0];
             this.fileName = file.name;
             const formData = new FormData();
@@ -132,10 +136,16 @@ export default {
                 method: 'POST',
                 body: formData
             })
-            .then(data => data.json())
-            .then((res) => {
-                this.contactForm.avatar = `https://anonymousfiles.io/f/${res.name}`;
-            });
+                .then(data => data.json())
+                .then((res) => {
+                    this.contactForm.avatar = `https://anonymousfiles.io/f/${res.name}`;
+                })
+                .catch(() => {
+                    this.errors.avatar = 'Kindly try uploading again';
+                })
+                .finally(() => {
+                    this.uploadingFile = false;
+                });
         },
     }
 };
@@ -144,23 +154,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-    .form-title{
+    .form-title {
         margin-top: 0;
     }
 
-    .form-input{
+    .form-input {
         margin-bottom: 16px;
         min-width: 350px;
     }
-    .form-input label{
+
+    .form-input label {
         color: #333333;
         font-weight: normal;
-        text-transform:uppercase;
+        text-transform: uppercase;
         font-size: 11px;
         display: inline-block;
         margin-bottom: 4px;
     }
-    .form-input input, .file-input{
+
+    .form-input input, .file-input {
         color: #333333;
         width: 100%;
         border-radius: 5px;
@@ -170,26 +182,27 @@ export default {
         border: 1px solid transparent;
         background-color: #d5d9d9;
     }
-    .form-input input:focus{
+
+    .form-input input:focus {
         outline: none;
     }
 
-    .form-input-hidden{
+    .form-input-hidden {
         display: none;
     }
 
-    .file-input{
+    .file-input {
         display: flex;
         align-items: center;
         padding-right: 0;
         justify-content: space-between;
     }
 
-    .file-input input{
+    .file-input input {
         border: none;
     }
 
-    .file-input-trigger{
+    .file-input-trigger {
         display: inline-flex;
         align-items: center;
         height: 100%;
@@ -199,21 +212,21 @@ export default {
         border: 1px dotted #000000;
     }
 
-    .file-input-trigger:hover{
+    .file-input-trigger:hover {
         cursor: pointer;
     }
 
-    .file-input-trigger:focus{
+    .file-input-trigger:focus {
         outline: none;
     }
 
-    .form-input-error{
+    .form-input-error {
         font-size: 11px;
         font-weight: 200;
         color: #696969;
     }
 
-    .form-action{
+    .form-action {
         margin-top: 30px;
         text-align: right;
     }
