@@ -1,5 +1,6 @@
 <template>
     <main class="app-layout">
+
         <div class="app-body">
             <header class="app-header">
                 <div class="app-header-content">
@@ -13,6 +14,7 @@
             </header>
 
             <div class="app-content">
+
                 <ContactList :contacts="contactList" @delete="promptDelete" @edit="openEditModal">
                     <div class="ad-card" v-if="ad.hasOwnProperty('company')">
                         <h4 class="title">{{ad.company}}</h4>
@@ -20,6 +22,7 @@
                         <a :href="ad.url" target="_blank">Visit</a>
                     </div>
                 </ContactList>
+
                 <div style="text-align: center">
                     <Spinner size="40px" :loading="fetchingContacts"/>
                 </div>
@@ -28,7 +31,7 @@
 
         <MicroModal :state="showCreateForm"
                     title="Add contact"
-                    modalId="create-contact-modal"
+                    modalId="create-contact"
                     @close="dismissCreateModal">
 
             <ContactForm
@@ -59,15 +62,13 @@
                 </button>
                 <button class="app-btn"
                         @click="deleteContact"
-                        :disabled="deleteState === 'SUBMITTING'">
+                        :disabled="deleteState === 'DELETING'">
                     <Spinner :loading="deleteState === 'DELETING'"/>
                     Yes
                 </button>
             </div>
         </MicroModal>
 
-
-        <div class="bottom-border" id="targetId"></div>
     </main>
 </template>
 
@@ -199,6 +200,7 @@ export default {
             fetch(`https://reqres.in/api/users/${contact.id}`, {
                 method: 'DELETE'
             })
+                .then(data => data.json())
                 .then(() => {
                     this.contactList.splice(this.contactToDeleteIndex, 1);
                     this.dismissDeleteModal();
@@ -258,7 +260,7 @@ export default {
         padding-top: 0.25em;
     }
 
-    button{
+    button {
         border-radius: 6px;
         height: 34px;
         padding: 0 1em;
@@ -296,22 +298,25 @@ export default {
         margin-left: 10px;
     }
 
-    .ad-card{
+    .ad-card {
         color: #FFFFFF;
         border-radius: 10px;
         text-align: center;
         background-color: #667eea;
         padding: 30px;
     }
-    .ad-card .title{
+
+    .ad-card .title {
         margin: 0;
     }
-    .ad-card .description{
+
+    .ad-card .description {
         font-size: 12px;
         margin: 8px 0 24px;
         font-weight: 200;
     }
-    .ad-card a{
+
+    .ad-card a {
         color: white;
         border: 1px solid #FFFFFF;
         border-radius: 18px;

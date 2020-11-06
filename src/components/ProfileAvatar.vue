@@ -1,10 +1,12 @@
 <template>
-    <span class="profile-avatar">
+    <div class="profile-avatar">
         <span class="profile-avatar-initials" v-if="showInitials">
             {{initials}}
         </span>
-        <img class="profile-avatar-image" :src="src" @error="showInitials = true" :alt="initials" v-else>
-    </span>
+        <div v-else>
+            <img class="profile-avatar-image" :src="src" @error="showInitials = true" :alt="initials">
+        </div>
+    </div>
 </template>
 
 <script>
@@ -23,7 +25,7 @@ export default {
     computed: {
         initials() {
             const firstInitial = this.firstName[0] || '';
-            const lastInitial = this.firstName[0] || '';
+            const lastInitial = this.lastName[0] || '';
             return (firstInitial + lastInitial).toUpperCase();
         }
     },
@@ -39,9 +41,10 @@ export default {
         display: inline-block;
     }
     .profile-avatar-image, .profile-avatar-initials{
-        border-radius: 100%;
+        border-radius: 50%;
         height: 100%;
         width: 100%;
+        background-color: #F5F5F5;
         border: 1px solid #F5F5F5;
     }
     .profile-avatar-initials{

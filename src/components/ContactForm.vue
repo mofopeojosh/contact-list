@@ -72,13 +72,13 @@ export default {
     },
     watch: {
         formData(newVal) {
-            if (this.formState === 'SUCCESS' || this.formState === 'PENDING') {
-                this.contactForm = newVal;
-                this.fileName = newVal.avatar;
-            }
+            this.contactForm = newVal;
+            this.fileName = newVal.avatar;
         },
         formState() {
-            this.resetForm();
+            if (this.formState === 'SUCCESS' || this.formState === 'PENDING') {
+                this.resetForm();
+            }
         }
     },
     mounted() {
@@ -126,26 +126,30 @@ export default {
             this.$refs.fileInput.click();
         },
         handleFileUpload(event) {
-            this.uploadingFile = true;
-            const file = event.target.files[0];
-            this.fileName = file.name;
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('expires', '1h');
-            fetch('https://api.anonymousfiles.io', {
-                method: 'POST',
-                body: formData
-            })
-                .then(data => data.json())
-                .then((res) => {
-                    this.contactForm.avatar = `https://anonymousfiles.io/f/${res.name}`;
+            if (event.target.files && event.target.files[0]) {
+                this.uploadingFile = true;
+
+                const file = event.target.files[0];
+                this.fileName = file.name;
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('expires', '1h');
+                fetch('https://api.anonymousfiles.io', {
+                    method: 'POST',
+                    body: formData
                 })
-                .catch(() => {
-                    this.errors.avatar = 'Kindly try uploading again';
-                })
-                .finally(() => {
-                    this.uploadingFile = false;
-                });
+                    .then(data => data.json())
+                    .then((res) => {
+                        this.contactForm.avatar = `https://anonymousfiles.io/f/${res.name}`;
+                    })
+                    .catch(() => {
+                        this.errors.avatar = 'Kindly try uploading again';
+                    })
+                    .finally(() => {
+                        this.uploadingFile = false;
+                    });
+            }
         },
     }
 };
