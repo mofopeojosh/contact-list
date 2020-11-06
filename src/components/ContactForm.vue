@@ -113,10 +113,6 @@ export default {
                 noErrors = false;
                 this.errors.email = 'Kindly add an email';
             }
-            if (avatar.length === 0) {
-                noErrors = false;
-                this.errors.avatar = 'Kindly add an avatar';
-            }
 
             if (noErrors) {
                 this.$emit('submit', this.contactForm);
