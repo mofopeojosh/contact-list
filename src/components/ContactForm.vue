@@ -46,7 +46,6 @@
 </template>
 
 <script>
-
 import Spinner from './Spinner';
 
 export default {
@@ -99,7 +98,7 @@ export default {
         validateContactForm() {
             this.errors = {};
             let noErrors = true;
-            const {first_name, last_name, email, avatar} = this.contactForm;
+            const {first_name, last_name, email} = this.contactForm;
 
             if (first_name.length === 0) {
                 noErrors = false;
@@ -109,9 +108,11 @@ export default {
                 noErrors = false;
                 this.errors.last_name = 'Kindly add a last name';
             }
-            if (email.length === 0) {
+
+            const emailReg = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+            if (!email.match(emailReg)) {
                 noErrors = false;
-                this.errors.email = 'Kindly add an email';
+                this.errors.email = 'Kindly add a valid email';
             }
 
             if (noErrors) {
