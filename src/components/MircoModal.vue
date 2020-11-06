@@ -37,6 +37,7 @@ export default {
         state(newVal) {
             if (newVal) {
                 MicroModal.show(this.modalId, {
+                    disableScroll: true,
                     onClose: this.closeModal
                 });
             } else {

@@ -9,8 +9,8 @@
             <div class="contact-card">
                 <ContactProfile :contact="contact"/>
                 <div class="contact-card-actions">
-                    <a href="#" class="link" @click.prevent="editContact(index)">edit</a>
-                    <a href="#" class="link" @click.prevent="deleteContact(index)">delete</a>
+                    <div><a href="#" class="link" @click.prevent="editContact(index)">edit</a></div>
+                    <div><a href="#" class="link" @click.prevent="deleteContact(index)">delete</a></div>
                 </div>
             </div>
         </li>
@@ -63,14 +63,10 @@ export default {
     }
 
     .contact-card-actions{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: flex-end;
-        justify-self: end;
+        text-align: right;
         font-weight: 200;
     }
     .contact-card-actions a{
-        color: #e9a1a0;
+        color: #e53e3e;
     }
 </style>

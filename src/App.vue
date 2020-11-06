@@ -214,12 +214,12 @@ export default {
 </script>
 
 <style>
-    *, ::after, ::before {
-        box-sizing: border-box;
-    }
-
     body {
         background-color: #f1f1f1;
+    }
+
+    .app-layout *, ::after, ::before {
+        box-sizing: border-box;
     }
 
     .app-layout {
@@ -260,8 +260,8 @@ export default {
 
     button{
         border-radius: 6px;
-        height: 36px;
-        padding: 0 0.75em;
+        height: 34px;
+        padding: 0 1em;
         text-align: center;
         border: 1px solid #f5f5f5;
         background-color: transparent;
@@ -273,7 +273,7 @@ export default {
 
     .app-btn {
         color: #FFFFFF;
-        background-color: #e07f7f;
+        background-color: #e53e3e;
     }
 
     button.link, a {
@@ -293,7 +293,7 @@ export default {
     }
 
     .delete-modal-actions button {
-        margin-left: 14px;
+        margin-left: 10px;
     }
 
     .ad-card{
