@@ -68,6 +68,7 @@
                 </button>
             </div>
         </MicroModal>
+        <ToastAlert :message="alert.message" :type="alert.type" @hide="resetAlert"/>
 
     </main>
 </template>
@@ -78,10 +79,11 @@ import ContactList from './components/ContactList';
 import MicroModal from './components/MircoModal';
 import ContactForm from './components/ContactForm';
 import Spinner from './components/Spinner';
+import ToastAlert from './components/ToastAlert';
 
 export default {
     name: 'App',
-    components: {Spinner, ContactForm, MicroModal, ContactList},
+    components: {ToastAlert, Spinner, ContactForm, MicroModal, ContactList},
     data() {
         return {
             ad: {},
@@ -99,6 +101,10 @@ export default {
             deleteState: 'PENDING',
             createFormState: 'PENDING',
             editFormState: 'PENDING',
+            alert: {
+                type: '',
+                message: ''
+            }
         };
     },
     created() {
@@ -135,29 +141,36 @@ export default {
             this.contactToDeleteIndex = null;
             this.contactToDelete = {};
         },
-        scrollFunction() {
+        scrollCallback() {
             const heightDiff = document.documentElement.offsetHeight - (document.documentElement.scrollTop + window.innerHeight);
             if (heightDiff <= 20) {
                 this.incrementPage();
             }
         },
+        triggerAlert(type, message) {
+            this.alert = {type, message}
+        },
+        resetAlert() {
+            this.alert = {type: '', message: ''}
+        },
         getContacts() {
             this.fetchingContacts = true;
-            window.removeEventListener('scroll', this.scrollFunction);
-            setTimeout(() => {
-                fetch(`https://reqres.in/api/users?page=${this.pageNumber}`)
-                    .then(data => data.json())
-                    .then(res => {
-                        this.ad = res.ad;
-                        this.contactList = this.contactList.concat(res.data);
-                        if (res.data.length > 0) {
-                            window.addEventListener('scroll', this.scrollFunction);
-                        }
-                    })
-                    .finally(() => {
-                        this.fetchingContacts = false;
-                    });
-            }, 1000);
+            window.removeEventListener('scroll', this.scrollCallback);
+            fetch(`https://reqres.in/api/users?page=${this.pageNumber}`)
+                .then(data => data.json())
+                .then(res => {
+                    this.ad = res.ad;
+                    this.contactList = this.contactList.concat(res.data);
+                    if (res.data.length > 0) {
+                        window.addEventListener('scroll', this.scrollCallback);
+                    }
+                })
+                .catch(() => {
+                    this.triggerAlert('error', "Something didn't go right, kindly try again.")
+                })
+                .finally(() => {
+                    this.fetchingContacts = false;
+                });
         },
         createContact(data) {
             this.createFormState = 'SUBMITTING';
@@ -173,9 +186,11 @@ export default {
                     });
                     this.dismissCreateModal();
                     this.createFormState = 'SUCCESS';
+                    this.triggerAlert('success', "You've successfully added a new contact")
                 })
                 .catch(() => {
                     this.createFormState = 'ERROR';
+                    this.triggerAlert('error', "Something didn't go right, kindly try again.")
                 });
         },
         editContact(data) {
@@ -189,9 +204,11 @@ export default {
                     this.$set(this.contactList, this.contactToEditIndex, data);
                     this.dismissEditModal();
                     this.editFormState = 'SUCCESS';
+                    this.triggerAlert('success', "You've successfully updated a contact")
                 })
                 .catch(() => {
                     this.editFormState = 'ERROR';
+                    this.triggerAlert('error', "Something didn't go right, kindly try again.")
                 });
         },
         deleteContact() {
@@ -200,15 +217,15 @@ export default {
             fetch(`https://reqres.in/api/users/${contact.id}`, {
                 method: 'DELETE'
             })
-                .then(data => data.json())
                 .then(() => {
                     this.contactList.splice(this.contactToDeleteIndex, 1);
                     this.dismissDeleteModal();
                     this.deleteState = 'SUCCESS';
-
+                    this.triggerAlert('success', "You've successfully deleted a contact")
                 })
                 .catch(() => {
                     this.deleteState = 'ERROR';
+                    this.triggerAlert('error', "Something didn't go right, kindly try again.")
                 });
         }
     }
