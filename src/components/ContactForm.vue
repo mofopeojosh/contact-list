@@ -3,23 +3,23 @@
         <h3 class="form-title">{{ editMode ? 'Edit' : 'New' }} Contact</h3>
         <div class="form-input">
             <label for="contact-first-name">First Name</label>
-            <input type="text" name="first_name" id="contact-first-name" v-model="contactForm.first_name">
+            <input type="text" name="first_name" id="contact-first-name" required v-model="contactForm.first_name">
             <span class="form-input-error">{{errors.first_name}}</span>
         </div>
         <div class="form-input">
             <label for="contact-last-name">Last Name</label>
-            <input type="text" name="email" id="contact-last-name" v-model="contactForm.last_name">
+            <input type="text" name="last_name" id="contact-last-name" required v-model="contactForm.last_name">
             <span class="form-input-error">{{errors.last_name}}</span>
         </div>
         <div class="form-input">
             <label for="contact-email">Email</label>
-            <input type="text" name="last_name" id="contact-email" v-model="contactForm.email">
+            <input type="text" name="email" id="contact-email" required v-model="contactForm.email">
             <span class="form-input-error">{{errors.email}}</span>
         </div>
         <div class="form-input">
             <label for="file-input">Avatar</label>
             <div class="file-input">
-                <input name="email" id="contact-avatar" v-model="fileName" type="text" autocomplete="off" readonly>
+                <input name="avatar" id="contact-avatar" v-model="fileName" type="text" autocomplete="off" readonly>
                 <span role="button"
                       tabindex="0"
                       aria-controls="file-input"
@@ -28,7 +28,7 @@
                     {{uploadingFile ? 'Uploading...' : 'Choose'}}
                 </span>
             </div>
-            <input class="form-input-hidden" ref="fileInput" type="file" @change="handleFileUpload" id="file-input">
+            <input class="form-input-hidden" accept="image/*" ref="fileInput" type="file" @change="handleFileUpload" id="file-input">
             <span class="form-input-error">{{errors.avatar}}</span>
         </div>
 
