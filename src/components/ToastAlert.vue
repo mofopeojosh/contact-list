@@ -40,7 +40,7 @@ export default {
                 this.alertMessage = this.message;
                 this.timeout = setTimeout(() => {
                     this.hideMessage();
-                }, 5000);
+                }, 10000);
             }
         },
         hideMessage() {
