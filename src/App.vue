@@ -16,7 +16,7 @@
             <div class="app-content">
 
                 <ContactList :contacts="contactList" @delete="promptDelete" @edit="openEditModal">
-                    <div class="ad-card" v-if="ad.hasOwnProperty('company')">
+                    <div class="ad-card" v-if="Object.keys(ad).length">
                         <h4 class="title">{{ad.company}}</h4>
                         <p class="description">{{ad.text}}</p>
                         <a :href="ad.url" target="_blank">Visit</a>
@@ -159,7 +159,7 @@ export default {
             fetch(`https://reqres.in/api/users?page=${this.pageNumber}`)
                 .then(data => data.json())
                 .then(res => {
-                    this.ad = res.ad;
+                    this.ad = res.ad || {};
                     this.contactList = this.contactList.concat(res.data);
                     if (res.data.length > 0) {
                         window.addEventListener('scroll', this.scrollCallback);
